@@ -57,23 +57,30 @@ public class CrearSucursal extends javax.swing.JFrame {
     boolean esDireccionValida(){
         String direccion = jTexDireccion.getText();
         for(char c : direccion.toCharArray()){
-            if(!Character.isLetterOrDigit(c) && c != '.' && c != ' '){
+            if(c != '.' && !Character.isLetterOrDigit(c) && c != ' '){
                 return false;
             }
         }
         return true;
     }
-    boolean esNumero() {
+   boolean esNumero() {
         boolean esNumerico;
         try {
-            Integer.parseInt(jTexReferencia.getText());
+        // Verifica si el texto es un número
+        long numero = Long.parseLong(jTexReferencia.getText()); // Usamos long para evitar problemas con números grandes
+        // Verifica que el número tenga 7 o 8 dígitos
+        if (jTexReferencia.getText().length() == 7 || jTexReferencia.getText().length() == 8) {
             esNumerico = true;
-        } catch (NumberFormatException e) {
+        } else {
             esNumerico = false;
         }
-        return esNumerico;
+        } catch (NumberFormatException e) {
+          esNumerico = false;
     }
+    return esNumerico;
+}
 
+   
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -173,24 +180,47 @@ public class CrearSucursal extends javax.swing.JFrame {
 
     private void jButGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButGuardarActionPerformed
      if (jTexNombre.getText().length() != 0 && jTexDireccion.getText().length() != 0 && jTexReferencia.getText().length() != 0) {
-            if (esLetra()) {
-                if (esDireccionValida()) {
+        if (esLetra()) {
+            if (esDireccionValida()) {
                 if (esNumero()) {
                     if (!suscursales.contains(jTexNombre.getText().trim())) {
                         try {
-                            String sql = "INSERT INTO suscursal (NOMBRE_SUCURSAL, DIRECCION_SUCURSAL, REFERENCIA_SUCURSAL) VALUES(?,?,?)";
-                            PreparedStatement ps = conn.prepareStatement(sql);
-                            ps.setString(1, jTexNombre.getText());
-                            ps.setString(2, jTexDireccion.getText());
-                            ps.setString(3, jTexReferencia.getText());
-                            int n = ps.executeUpdate();
-                            if (n > 0) {
-                                JOptionPane.showMessageDialog(null, "Datos guardados correctamente");
+
+                            PreparedStatement checkName = conn.prepareStatement("SELECT COUNT(*) FROM suscursal WHERE NOMBRE_SUCURSAL = ?");
+                            checkName.setString(1, jTexNombre.getText());
+                            ResultSet rsName = checkName.executeQuery();
+                            rsName.next();
+                            int countName = rsName.getInt(1);
+                            rsName.close();
+                            checkName.close();
+                            PreparedStatement checkAddress = conn.prepareStatement("SELECT COUNT(*) FROM suscursal WHERE DIRECCION_SUCURSAL = ?");
+                            checkAddress.setString(1, jTexDireccion.getText());
+                            ResultSet rsAddress = checkAddress.executeQuery();
+                            rsAddress.next();
+                            int countAddress = rsAddress.getInt(1);
+                            rsAddress.close();
+                            checkAddress.close();
+
+                            if (countName > 0) {
+                                JOptionPane.showMessageDialog(null, "Nombre de la sucursal ya está en uso");
+                            } else if (countAddress > 0) {
+                                JOptionPane.showMessageDialog(null, "Dirección de la sucursal ya está en uso");
+                            } else {
+                                String sql = "INSERT INTO suscursal (NOMBRE_SUCURSAL, DIRECCION_SUCURSAL, REFERENCIA_SUCURSAL) VALUES(?,?,?)";
+                                PreparedStatement ps = conn.prepareStatement(sql);
+                                ps.setString(1, jTexNombre.getText());
+                                ps.setString(2, jTexDireccion.getText());
+                                ps.setString(3, jTexReferencia.getText());
+                                int n = ps.executeUpdate();
+                                if (n > 0) {
+                                    JOptionPane.showMessageDialog(null, "Datos guardados correctamente");
+                                }
+                                ps.close();
+                                limpiar();
                             }
                         } catch (Exception e) {
-                            JOptionPane.showMessageDialog(null, e.getMessage());
+                            JOptionPane.showMessageDialog(null, "Error al guardar los datos" + e.getMessage());
                         }
-                        limpiar();
                     } else {
                         JOptionPane.showMessageDialog(null, "Nombre de la sucursal ya está en uso");
                     }
@@ -205,7 +235,7 @@ public class CrearSucursal extends javax.swing.JFrame {
         }
     } else {
         JOptionPane.showMessageDialog(null, "Datos incompletos para el registro");
-        }      
+    }       
     }//GEN-LAST:event_jButGuardarActionPerformed
 
     private void jButCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButCancelarActionPerformed
