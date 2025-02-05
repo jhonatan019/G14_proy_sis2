@@ -240,9 +240,7 @@ public class CrearSucursal extends javax.swing.JFrame {
     }//GEN-LAST:event_jTexNombreActionPerformed
 
     private void jButCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButCancelarActionPerformed
-      
-      MenuAdmin adminMenu = new MenuAdmin();
-      adminMenu.setVisible(true);
+
       this.dispose();
     }//GEN-LAST:event_jButCancelarActionPerformed
 

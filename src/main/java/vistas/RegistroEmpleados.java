@@ -117,7 +117,7 @@ public class RegistroEmpleados extends javax.swing.JFrame {
                 
                 // Insertamos el nuevo usuario
                 String sql = "INSERT INTO usuario (ID_SUCURSAL, NOM_USUARIO, APELLIDOS_USUARIO, " +
-                           "CI_USUARIO, TELF_USUARIOO, CARGO_USUARIO) VALUES (?, ?, ?, ?, ?, ?)";
+                           "CI_USUARIO, TELF_USUARIO, CARGO_USUARIO) VALUES (?, ?, ?, ?, ?, ?)";
                 
                 PreparedStatement pst = conexion.prepareStatement(sql);
                 pst.setInt(1, idSucursal);
