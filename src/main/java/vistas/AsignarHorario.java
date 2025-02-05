@@ -15,7 +15,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author Tommy
+ * @author Alina
  */
 public class AsignarHorario extends javax.swing.JFrame {
 
@@ -51,7 +51,6 @@ public class AsignarHorario extends javax.swing.JFrame {
     modeloTabla.setRowCount(0);
     modeloTabla.setColumnCount(0);
     
-    // Configurar las columnas en el orden correcto
     modeloTabla.addColumn("ID");
     modeloTabla.addColumn("Película");
     modeloTabla.addColumn("Fecha");
@@ -156,7 +155,6 @@ public class AsignarHorario extends javax.swing.JFrame {
             return false;
         }
         
-        // Validar formato de fecha (YYYY-MM-DD)
         try {
             java.sql.Date.valueOf(txt_fecha.getText());
         } catch (IllegalArgumentException e) {
@@ -164,7 +162,6 @@ public class AsignarHorario extends javax.swing.JFrame {
             return false;
         }
         
-        // Validar formato de hora (HH:MM)
         try {
             java.sql.Time.valueOf(txt_horario.getText() + ":00");
         } catch (IllegalArgumentException e) {
@@ -216,7 +213,6 @@ public class AsignarHorario extends javax.swing.JFrame {
         ResultSet rs = pst.executeQuery();
         
         if(rs.next()) {
-            // Seleccionar la película en el combo
             for(int i = 0; i < combo_pelicula.getItemCount(); i++) {
                 String item = combo_pelicula.getItemAt(i);
                 if(item.startsWith(rs.getInt("ID_PELICULA") + " - ")) {
@@ -225,7 +221,6 @@ public class AsignarHorario extends javax.swing.JFrame {
                 }
             }
             
-            // Seleccionar la sala en el combo
             for(int i = 0; i < combo_sala.getItemCount(); i++) {
                 String item = combo_sala.getItemAt(i);
                 if(item.startsWith(rs.getInt("ID_SALA") + " - ")) {
@@ -234,7 +229,6 @@ public class AsignarHorario extends javax.swing.JFrame {
                 }
             }
             
-            // Establecer fecha y hora
             txt_fecha.setText(rs.getDate("FECHA_FUNCION").toString());
             txt_horario.setText(rs.getTime("FUNCION_INICIO").toString().substring(0, 5));
         }

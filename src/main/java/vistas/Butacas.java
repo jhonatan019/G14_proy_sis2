@@ -62,7 +62,7 @@ public class Butacas extends javax.swing.JFrame {
     inicializarButacas();
     cargarButacasOcupadas();
     actualizarTotal();
-    setResizable(false);
+    setResizable(true);
     setTitle("Selección de Butacas");
     setLocationRelativeTo(null);
     
